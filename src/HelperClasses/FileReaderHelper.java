@@ -27,7 +27,7 @@ public class FileReaderHelper {
 				String a[] = s.split(",");
 				for (int i = 1; i <= 10; i++) {
 					if (a[i].equals("?")) {
-						a[i] = "0";
+						a[i] = "1";
 					}
 				}
 				arr[0][counter] = Integer.parseInt(a[0]);
