@@ -1,7 +1,6 @@
 package NeuralNetworkPackage;
 
 import HelperClasses.Matrix;
-
 import java.util.List;
 import java.util.Random;
 
@@ -11,10 +10,6 @@ public class NeuralNetwork {
 	private Matrix input, output, hidden, gradient, error;
 	private final double learning_rate = 0.01;
 
-
-	/**
-	 * CONSTRUCTOR
-	 */
 	public NeuralNetwork(int i, int h, int o) {
 		//Create the weight matrices
 		weights_input_hidden = new Matrix(h, i);
@@ -28,6 +23,7 @@ public class NeuralNetwork {
 	public List<Double> predict(double[] inputs) {
 		//Converts array to a matrix
 		Matrix input = Matrix.fromArray(inputs);
+		//Feed Forward
 		feedForward(input);
 		return output.toArray();
 	}
@@ -39,32 +35,27 @@ public class NeuralNetwork {
 		hidden.sigmoid();
 
 		//CALCULATE THE PREDICTED OUTPUT
-
 		output = Matrix.multiply(weights_hidden_output, hidden);
 		output.add(bias_output);
 		output.sigmoid();
 	}
 	public void backpropogation(Matrix target){
 		//CALCULATE THE ERROR AND GRADIENT
-
 		error = Matrix.subtract(target, output);
 		gradient = output.dsigmoid();
 		gradient.multiply(error);
 		gradient.multiply(learning_rate);
 
 		//CALCULATE THE DELTA
-
-		Matrix hidden_T = Matrix.transpose(hidden);
-		Matrix who_delta = Matrix.multiply(gradient, hidden_T);
+		Matrix hidden_transpose = Matrix.transpose(hidden);
+		Matrix who_delta = Matrix.multiply(gradient, hidden_transpose);
 
 		//ADD THE GRADIENT AND DELTA TO WEIGHT AND BIAS OF HIDDEN/OUTPUT AND OUTPUT
-
 		weights_hidden_output.add(who_delta);
 		bias_output.add(gradient);
 
 
 		//CALCULATE GRADIENT AND DELTA FOR INPUT/HIDDEN LAYER
-
 		Matrix who_T = Matrix.transpose(weights_hidden_output);
 		Matrix hidden_errors = Matrix.multiply(who_T, error);
 
@@ -86,7 +77,7 @@ public class NeuralNetwork {
 		backpropogation(target);
 	}
 
-	public void fit(double[][] inputs, double[][] outputs, int epochs) {
+	public void train_helper(double[][] inputs, double[][] outputs, int epochs) {
 		for (int i = 0; i < epochs; i++) {
 			Random r = new Random();
 			int randomSample = (int) (r.nextDouble() * inputs.length);

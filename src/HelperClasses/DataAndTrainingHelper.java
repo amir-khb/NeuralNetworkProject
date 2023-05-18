@@ -5,7 +5,8 @@ import NeuralNetworkPackage.NeuralNetwork;
 import java.io.IOException;
 
 public class DataAndTrainingHelper {
-	final int dataSetNum = 400;
+	//Train the network with 75% of the dataset, 700 * 0.75 = 525
+	final int dataSetNum = 525;
 	final int attributeNum = 11;
 	final String path = "src/DataSet/breast-cancer-wisconsin.data";
 	final int numInput = 9;
@@ -48,7 +49,7 @@ public class DataAndTrainingHelper {
 	}
 
 	public void trainNetwork() {
-		nn.fit(getInput(), getOutput(), numTrainingLoop);
+		nn.train_helper(getInput(), getOutput(), numTrainingLoop);
 	}
 
 	public NeuralNetwork getNn() {
