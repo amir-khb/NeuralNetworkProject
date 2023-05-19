@@ -21,7 +21,7 @@ public class NeuralNetwork {
 	}
 
 	public List<Double> predict(double[] inputs) {
-		//Converts array to a matrix
+		//Converts array to a matrix2
 		Matrix input = Matrix.fromArray(inputs);
 		//Feed Forward
 		feedForward(input);

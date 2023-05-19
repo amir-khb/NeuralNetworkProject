@@ -4,156 +4,248 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Matrix {
-	double[][] data;
-	int rows;
-	int cols;
+	private Node head;
+	private int rows;
+	private int cols;
 
-	/**
-	 * CONSTRUCTORS
-	 **/
+	private static class Node {
+		double value;
+		Node nextRow;
+		Node nextCol;
+
+		Node(double value) {
+			this.value = value;
+		}
+	}
+
 	public Matrix(int rows, int cols) {
-		data = new double[rows][cols];
 		this.rows = rows;
 		this.cols = cols;
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				data[i][j] = Math.random() * 2 - 1;
-			}
+		initializeMatrix2();
+	}
+
+	private void initializeMatrix2() {
+		head = new Node(0.0);
+		Node currentRow = head;
+		Node currentCol = head;
+
+		for (int i = 1; i < rows; i++) {
+			currentRow.nextRow = new Node(0.0);
+			currentRow = currentRow.nextRow;
+		}
+
+		for (int j = 1; j < cols; j++) {
+			currentCol.nextCol = new Node(0.0);
+			currentCol = currentCol.nextCol;
 		}
 	}
 
-	/**
-	 * END OF CONSTRUCTORS
-	 **/
-
-	//SCALAR ADDITION TO MATRIX
-	public void add(double scaler) {
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				this.data[i][j] += scaler;
+	public void add(double scalar) {
+		Node currentRow = head;
+		while (currentRow != null) {
+			Node currentCol = currentRow;
+			while (currentCol != null) {
+				currentCol.value += scalar;
+				currentCol = currentCol.nextCol;
 			}
-
+			currentRow = currentRow.nextRow;
 		}
 	}
 
-	/**
-	 * MATRIX ADDITION, SUBTRACTION, MULTIPLICATION, AND TRANSPOSE
-	 **/
-
-	//MATRIX ADDITION
 	public void add(Matrix m) {
-		if (cols != m.cols || rows != m.rows) {
+		if (m.rows != rows || m.cols != cols) {
 			System.out.println("Shape Mismatch");
 			return;
 		}
 
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				this.data[i][j] += m.data[i][j];
+		Node currentRowA = head;
+		Node currentRowB = m.head;
+
+		while (currentRowA != null && currentRowB != null) {
+			Node currentColA = currentRowA;
+			Node currentColB = currentRowB;
+
+			while (currentColA != null && currentColB != null) {
+				currentColA.value += currentColB.value;
+				currentColA = currentColA.nextCol;
+				currentColB = currentColB.nextCol;
 			}
+
+			currentRowA = currentRowA.nextRow;
+			currentRowB = currentRowB.nextRow;
 		}
 	}
 
-	//MATRIX SUBTRACT
 	public static Matrix subtract(Matrix a, Matrix b) {
-		Matrix temp = new Matrix(a.rows, a.cols);
-		for (int i = 0; i < a.rows; i++) {
-			for (int j = 0; j < a.cols; j++) {
-				temp.data[i][j] = a.data[i][j] - b.data[i][j];
+		Matrix result = new Matrix(a.rows, a.cols);
+		Node currentRowA = a.head;
+		Node currentRowB = b.head;
+		Node currentRowRes = result.head;
+
+		while (currentRowA != null && currentRowB != null && currentRowRes != null) {
+			Node currentColA = currentRowA;
+			Node currentColB = currentRowB;
+			Node currentColRes = currentRowRes;
+
+			while (currentColA != null && currentColB != null && currentColRes != null) {
+				currentColRes.value = currentColA.value - currentColB.value;
+				currentColA = currentColA.nextCol;
+				currentColB = currentColB.nextCol;
+				currentColRes = currentColRes.nextCol;
 			}
+
+			currentRowA = currentRowA.nextRow;
+			currentRowB = currentRowB.nextRow;
+			currentRowRes = currentRowRes.nextRow;
 		}
-		return temp;
+
+		return result;
 	}
 
-	//MATRIX TRANSPOSE
 	public static Matrix transpose(Matrix a) {
-		Matrix temp = new Matrix(a.cols, a.rows);
-		for (int i = 0; i < a.rows; i++) {
-			for (int j = 0; j < a.cols; j++) {
-				temp.data[j][i] = a.data[i][j];
+		Matrix result = new Matrix(a.cols, a.rows);
+		Node currentRowA = a.head;
+		Node currentRowRes = result.head;
+
+		while (currentRowA != null && currentRowRes != null) {
+			Node currentColA = currentRowA;
+			Node currentColRes = currentRowRes;
+
+			while (currentColA != null && currentColRes != null) {
+				currentColRes.value = currentColA.value;
+				currentColA = currentColA.nextCol;
+				currentColRes = currentColRes.nextRow;
 			}
+
+			currentRowA = currentRowA.nextRow;
+			currentRowRes = currentRowRes.nextCol;
 		}
-		return temp;
+
+		return result;
 	}
 
-	//MATRIX MULTIPLY
 	public static Matrix multiply(Matrix a, Matrix b) {
-		Matrix temp = new Matrix(a.rows, b.cols);
-		for (int i = 0; i < temp.rows; i++) {
-			for (int j = 0; j < temp.cols; j++) {
-				double sum = 0;
-				for (int k = 0; k < a.cols; k++) {
-					sum += a.data[i][k] * b.data[k][j];
+		Matrix result = new Matrix(a.rows, b.cols);
+		Node currentRowA = a.head;
+		Node currentRowRes = result.head;
+
+		while (currentRowA != null && currentRowRes != null) {
+			Node currentColB = b.head;
+			Node currentColRes = currentRowRes;
+
+			while (currentColB != null && currentColRes != null) {
+				double sum = 0.0;
+				Node currentColA = currentRowA;
+				while (currentColA != null) {
+					sum += currentColA.value * currentColB.value;
+					currentColA = currentColA.nextCol;
+					currentColB = currentColB.nextRow;
 				}
-				temp.data[i][j] = sum;
+				currentColRes.value = sum;
+				currentColRes = currentColRes.nextCol;
+				currentColB = b.head;
 			}
+
+			currentRowA = currentRowA.nextRow;
+			currentRowRes = currentRowRes.nextRow;
 		}
-		return temp;
+
+		return result;
 	}
 
 	public void multiply(Matrix a) {
-		for (int i = 0; i < a.rows; i++) {
-			for (int j = 0; j < a.cols; j++) {
-				this.data[i][j] *= a.data[i][j];
-			}
-		}
+		Node currentRowA = a.head;
+		Node currentRowRes = head;
 
+		while (currentRowA != null && currentRowRes != null) {
+			Node currentColA = currentRowA;
+			Node currentColRes = currentRowRes;
+
+			while (currentColA != null && currentColRes != null) {
+				currentColRes.value *= currentColA.value;
+				currentColA = currentColA.nextCol;
+				currentColRes = currentColRes.nextCol;
+			}
+
+			currentRowA = currentRowA.nextRow;
+			currentRowRes = currentRowRes.nextRow;
+		}
 	}
 
 	public void multiply(double a) {
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				this.data[i][j] *= a;
+		Node currentRow = head;
+		while (currentRow != null) {
+			Node currentCol = currentRow;
+			while (currentCol != null) {
+				currentCol.value *= a;
+				currentCol = currentCol.nextCol;
+			}
+			currentRow = currentRow.nextRow;
+		}
+	}
+
+	public void sigmoid() {
+		Node currentRow = head;
+		while (currentRow != null) {
+			Node currentCol = currentRow;
+			while (currentCol != null) {
+				currentCol.value = 1 / (1 + Math.exp(-currentCol.value));
+				currentCol = currentCol.nextCol;
+			}
+			currentRow = currentRow.nextRow;
+		}
+	}
+
+	public Matrix dsigmoid() {
+		Matrix result = new Matrix(rows, cols);
+		Node currentRow = head;
+		Node currentRowRes = result.head;
+
+		while (currentRow != null && currentRowRes != null) {
+			Node currentCol = currentRow;
+			Node currentColRes = currentRowRes;
+
+			while (currentCol != null && currentColRes != null) {
+				currentColRes.value = currentCol.value * (1 - currentCol.value);
+				currentCol = currentCol.nextCol;
+				currentColRes = currentColRes.nextCol;
+			}
+
+			currentRow = currentRow.nextRow;
+			currentRowRes = currentRowRes.nextRow;
+		}
+
+		return result;
+	}
+
+	public static Matrix fromArray(double[] array) {
+		Matrix result = new Matrix(array.length, 1);
+		Node currentRow = result.head;
+
+		for (int i = 0; i < array.length; i++) {
+			currentRow.value = array[i];
+			if (i != array.length - 1) {
+				currentRow.nextRow = new Node(0.0);
+				currentRow = currentRow.nextRow;
 			}
 		}
 
-	}
-
-	/**
-	 * END OF MATRIX ADDITION, SUBTRACTION, MULTIPLICATION, AND TRANSPOSE
-	 * <p>
-	 * SIGMOID FUNCTION FOR ACTIVATION FUNCTION
-	 **/
-	public void sigmoid() {
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++)
-				this.data[i][j] = 1 / (1 + Math.exp(-this.data[i][j]));
-		}
-
-	}
-
-	//DERIVATIVE OF SIGMOID FUNCTION
-	public Matrix dsigmoid() {
-		Matrix temp = new Matrix(rows, cols);
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++)
-				temp.data[i][j] = this.data[i][j] * (1 - this.data[i][j]);
-		}
-		return temp;
-	}
-
-	/**
-	 * END OF SIGMOID FUNCTION FOR ACTIVATION FUNCTION
-	 * <p>
-	 * HELPER METHODS
-	 **/
-	//CREATE MATRIX FROM AN ARRAY
-	public static Matrix fromArray(double[] x) {
-		Matrix temp = new Matrix(x.length, 1);
-		for (int i = 0; i < x.length; i++)
-			temp.data[i][0] = x[i];
-		return temp;
-
+		return result;
 	}
 
 	public List<Double> toArray() {
-		List<Double> temp = new ArrayList<Double>();
+		List<Double> result = new ArrayList<>();
+		Node currentRow = head;
 
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				temp.add(data[i][j]);
+		while (currentRow != null) {
+			Node currentCol = currentRow;
+			while (currentCol != null) {
+				result.add(currentCol.value);
+				currentCol = currentCol.nextCol;
 			}
+			currentRow = currentRow.nextRow;
 		}
-		return temp;
+
+		return result;
 	}
 }
