@@ -39,7 +39,7 @@ public class NeuralNetwork {
 		output.add(bias_output);
 		output.sigmoid();
 	}
-	public void backpropogation(Matrix target){
+	public void backpropagation(Matrix target){
 		//CALCULATE THE ERROR AND GRADIENT
 		error = Matrix.subtract(target, output);
 		gradient = output.dsigmoid();
@@ -74,7 +74,7 @@ public class NeuralNetwork {
 		input = Matrix.fromArray(inputs);
 		feedForward(input);
 		Matrix target = Matrix.fromArray(outputs);
-		backpropogation(target);
+		backpropagation(target);
 	}
 
 	public void train_helper(double[][] inputs, double[][] outputs, int epochs) {
