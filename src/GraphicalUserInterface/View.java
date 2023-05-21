@@ -11,9 +11,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.io.IOException;
-import java.util.List;
 
 public class View extends Application {
 	ComboBox<Integer> clumpThickness;
@@ -28,7 +26,13 @@ public class View extends Application {
 
 	Text outputText;
 	final Integer[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	private Model model;
 	private Controller controller;
+
+	public View() throws IOException {
+		model = new Model();
+		controller = new Controller(this, model);
+	}
 
 	public void start(Stage primaryStage) throws IOException {
 		// Create the combo boxes and add the numbers to them
