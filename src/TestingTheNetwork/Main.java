@@ -49,23 +49,37 @@ public class Main {
 		int counter = 0;
 		for (double[] d : newInput) {
 			List l = nn.predict(d);
-			//System.out.println(l.get(0));
 			result[counter] = (double) l.get(0);
 			counter++;
 		}
 		counter = 0;
+		int incorrectRes = 0;
+		int[] problemVals = new int[100];
 		for (double[] d : newOutput) {
 			double temp = d[0];
 			if (temp == 1) {
 				double temp2 = result[counter] * 100;
 				counter++;
-				System.out.println(temp2 + "% accuracy on data number " + (counter + 525)+" That this tumor is Malignant!");
+				System.out.println(temp2 + "% accuracy on data number " + (counter + 525) + " That this tumor is Malignant!");
+				if (temp2 < 70) {
+					problemVals[incorrectRes] = counter + 525;
+					incorrectRes++;
+				}
 			}
 			if (temp == 0) {
-				double temp2 = 1 - result[counter];
+				double temp2 = (1 - result[counter]) * 100;
 				counter++;
-				System.out.println(temp2 * 100 + "% accuracy on data number " + (counter + 525)+ " That this tumor is Benign!");
+				System.out.println(temp2 + "% accuracy on data number " + (counter + 525) + " That this tumor is Benign!");
+				if (temp2 < 70) {
+					problemVals[incorrectRes] = counter + 525;
+					incorrectRes++;
+				}
 			}
 		}
+		for (int a : problemVals) {
+			if (a != 0)
+				System.out.println("Data " + a + " has less than 70% accuracy!");
+		}
+		System.out.println("Number of data with less than 70% accuracy: " + incorrectRes);
 	}
 }
