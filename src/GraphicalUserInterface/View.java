@@ -1,6 +1,5 @@
 package GraphicalUserInterface;
 
-import HelperClasses.DataAndTrainingHelper;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -17,23 +16,21 @@ import java.io.IOException;
 import java.util.List;
 
 public class View extends Application {
-	private ComboBox<Integer> clumpThickness;
-	private ComboBox<Integer> uniformityOfCellSize;
-	private ComboBox<Integer> uniformityOfCellShape;
-	private ComboBox<Integer> marginalAdhesion;
-	private ComboBox<Integer> singleEpithelialCellSize;
-	private ComboBox<Integer> bareNuclei;
-	private ComboBox<Integer> blandChromatin;
-	private ComboBox<Integer> normalNucleoli;
-	private ComboBox<Integer> mitoses;
+	ComboBox<Integer> clumpThickness;
+	ComboBox<Integer> uniformityOfCellSize;
+	ComboBox<Integer> uniformityOfCellShape;
+	ComboBox<Integer> marginalAdhesion;
+	ComboBox<Integer> singleEpithelialCellSize;
+	ComboBox<Integer> bareNuclei;
+	ComboBox<Integer> blandChromatin;
+	ComboBox<Integer> normalNucleoli;
+	ComboBox<Integer> mitoses;
 
-	private Text outputText;
+	Text outputText;
 	final Integer[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-	DataAndTrainingHelper d;
+	private Controller controller;
 
 	public void start(Stage primaryStage) throws IOException {
-		d = new DataAndTrainingHelper();
-
 		// Create the combo boxes and add the numbers to them
 		clumpThickness = new ComboBox<>(FXCollections.observableArrayList(numbers));
 		uniformityOfCellSize = new ComboBox<>(FXCollections.observableArrayList(numbers));
@@ -62,7 +59,7 @@ public class View extends Application {
 
 		// Create predict button
 		Button predictButton = new Button("Predict");
-		predictButton.setOnAction(e -> predictResult());
+		predictButton.setOnAction(e -> controller.predictResult());
 
 		// Set button style
 		predictButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px;");
@@ -98,23 +95,8 @@ public class View extends Application {
 		primaryStage.show();
 	}
 
-	private void predictResult() {
-		double[] inputs = new double[9];
-		List<Double> output;
-		inputs[0] = clumpThickness.getValue();
-		inputs[1] = uniformityOfCellSize.getValue();
-		inputs[2] = uniformityOfCellShape.getValue();
-		inputs[3] = marginalAdhesion.getValue();
-		inputs[4] = singleEpithelialCellSize.getValue();
-		inputs[5] = bareNuclei.getValue();
-		inputs[6] = blandChromatin.getValue();
-		inputs[7] = normalNucleoli.getValue();
-		inputs[8] = mitoses.getValue();
-		output = d.getNn().predict(inputs);
-		outputText.setText(output.toString());
-	}
-
-	public static void main(String[] args) {
-		launch(args);
+	public void setController(Controller controller) {
+		this.controller = controller;
 	}
 }
+
