@@ -1,6 +1,7 @@
 package NeuralNetworkPackage;
 
 import HelperClasses.Matrix;
+
 import java.util.List;
 import java.util.Random;
 
@@ -28,7 +29,7 @@ public class NeuralNetwork {
 		return output.toArray();
 	}
 
-	public void feedForward(Matrix input){
+	public void feedForward(Matrix input) {
 		//CALCULATE THE HIDDEN NEURONS
 		hidden = Matrix.multiply(weights_input_hidden, input);
 		hidden.add(bias_hidden);
@@ -39,7 +40,8 @@ public class NeuralNetwork {
 		output.add(bias_output);
 		output.sigmoid();
 	}
-	public void backpropagation(Matrix target){
+
+	public void backpropagation(Matrix target) {
 		//CALCULATE THE ERROR AND GRADIENT
 		error = Matrix.subtract(target, output);
 		gradient = output.dsigmoid();

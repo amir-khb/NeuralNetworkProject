@@ -2,6 +2,7 @@ package HelperClasses;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Matrix {
 	private Node head;
@@ -25,17 +26,28 @@ public class Matrix {
 	}
 
 	private void initializeMatrix2() {
-		head = new Node(0.0);
+		double minValue = 0.0;
+		double maxValue = 0.1;
+
+		// Create an instance of the Random class
+		Random random = new Random();
+
+		// Generate a random double between 0 and 0.1
+		double randomValue = minValue + (maxValue - minValue) * random.nextDouble();
+
+		head = new Node(randomValue);
 		Node currentRow = head;
 		Node currentCol = head;
 
 		for (int i = 1; i < rows; i++) {
-			currentRow.nextRow = new Node(0.0);
+			randomValue = minValue + (maxValue - minValue) * random.nextDouble();
+			currentRow.nextRow = new Node(randomValue);
 			currentRow = currentRow.nextRow;
 		}
 
 		for (int j = 1; j < cols; j++) {
-			currentCol.nextCol = new Node(0.0);
+			randomValue = minValue + (maxValue - minValue) * random.nextDouble();
+			currentCol.nextCol = new Node(randomValue);
 			currentCol = currentCol.nextCol;
 		}
 	}

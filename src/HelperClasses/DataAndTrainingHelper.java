@@ -11,8 +11,8 @@ public class DataAndTrainingHelper {
 	final String path = "src/DataSet/breast-cancer-wisconsin.data";
 	final int numInput = 9;
 	final int numOutput = 1;
-	final int numHiddenLayer = 5;
-	final int numTrainingLoop = 500000;
+	final int numHiddenNeurons = 6;
+	final int epochs = 300000;
 	double[][] input;
 	double[][] output;
 	double[][] dataSet;
@@ -22,7 +22,7 @@ public class DataAndTrainingHelper {
 	public DataAndTrainingHelper() throws IOException {
 		f = new FileReaderHelper(path, dataSetNum, attributeNum);
 		dataSet = f.textToArray();
-		nn = new NeuralNetwork(numInput, numHiddenLayer, numOutput);
+		nn = new NeuralNetwork(numInput, numHiddenNeurons, numOutput);
 		trainNetwork();
 	}
 
@@ -49,7 +49,7 @@ public class DataAndTrainingHelper {
 	}
 
 	public void trainNetwork() {
-		nn.train_helper(getInput(), getOutput(), numTrainingLoop);
+		nn.train_helper(getInput(), getOutput(), epochs);
 	}
 
 	public NeuralNetwork getNn() {
