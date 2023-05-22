@@ -17,6 +17,14 @@ public class Controller {
 	public void predictResult() {
 		double[] inputs = new double[9];
 		List<Double> output;
+		if (view.clumpThickness.getValue() == null || view.uniformityOfCellSize.getValue() == null ||
+				view.uniformityOfCellShape.getValue() == null || view.marginalAdhesion.getValue() == null ||
+				view.singleEpithelialCellSize.getValue() == null || view.bareNuclei.getValue() == null ||
+				view.blandChromatin.getValue() == null || view.normalNucleoli.getValue() == null ||
+				view.mitoses.getValue() == null) {
+			view.outputText.setText("Please insert all the values!");
+			return;
+		}
 		inputs[0] = view.clumpThickness.getValue();
 		inputs[1] = view.uniformityOfCellSize.getValue();
 		inputs[2] = view.uniformityOfCellShape.getValue();
@@ -28,7 +36,6 @@ public class Controller {
 		inputs[8] = view.mitoses.getValue();
 		output = model.predictResult(inputs);
 		printResult(output);
-		//view.outputText.setText(output.toString());
 	}
 
 	public void printResult(List<Double> output) {
